@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
-using PC_REST_API.Context;
+using PC_REST_API.Context.Context;
+using PC_REST_API.General.Classes.Configure;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -11,15 +11,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");
-builder.Services.AddDbContext<CharacteristicsContext>(options => options.UseNpgsql(connectionString));
-var app = builder.Build();
+string? connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");
+builder.Services.AddDbContext<CharacteristicContext>(options => options.UseNpgsql(connectionString));
+DependencyInjectionConfigure.ConfigureService(builder.Services);
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    _ = app.UseSwagger();
+    _ = app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
